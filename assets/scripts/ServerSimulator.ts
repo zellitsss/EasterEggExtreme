@@ -1,7 +1,8 @@
-import { PLAY_TIME, MIN_SPAWN_TIME, MAX_SPAWN_TIME, MAX_PLAYERS, CANVAS_WIDTH, PLAYER_RADIUS, CANVAS_HEIGHT } from "./Defines";
+import { PLAY_TIME, MIN_SPAWN_TIME, MAX_SPAWN_TIME, MAX_PLAYERS, CANVAS_WIDTH, PLAYER_RADIUS, CANVAS_HEIGHT, MAX_EGGS } from "./Defines";
 import Player from "./server/Player";
 import LocalClient from "./LocalClient";
 import { GetSpawnTime, UniqueID, GetRandomPosition, GetRandomUpdateTime } from "./server/utils";
+import Egg from "./server/Egg";
 
 const {ccclass, property} = cc._decorator;
 
@@ -17,6 +18,7 @@ export default class ServerSimulator extends cc.Component {
     spawnTime: number;
 
     playersList: Player[] = [];
+    eggsList: Egg[] = [];
 
     localClients: LocalClient;
 
@@ -48,6 +50,13 @@ export default class ServerSimulator extends cc.Component {
     }
 
     update (dt) {
+        if (this.spawnTime <= 0 && this.eggsList.length < MAX_EGGS) {
+            this.SpawnNewEgg();
+            this.spawnTime = GetSpawnTime();
+        } else {
+            this.spawnTime -= dt;
+        }
+
 
         if (this.updateCountdown <= 0) {
             // send update to client
@@ -55,5 +64,18 @@ export default class ServerSimulator extends cc.Component {
         } else {
             this.updateCountdown -= dt;
         }
+    }
+
+    SpawnNewEgg() {
+        let egg: Egg = new Egg();
+        egg.setID(UniqueID());
+        egg.setPosition(GetRandomPosition());
+        let eggData: any = {
+            id: egg.id,
+            x: egg.getPosition().x,
+            y: egg.getPosition().y
+        }
+        this.localClients.AddNewEgg(eggData);
+        this.eggsList.push(egg);
     }
 }

@@ -399,6 +399,9 @@
     "rivalPrefab": {
       "__uuid__": "f2bc2e86-cc8a-4f65-b88e-1fcee0ab3742"
     },
+    "eggPrefab": {
+      "__uuid__": "3a52f066-6e3a-4305-81d4-23239daed80e"
+    },
     "player": {
       "__id__": 5
     },
