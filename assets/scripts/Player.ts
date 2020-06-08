@@ -4,9 +4,7 @@ const {ccclass, property} = cc._decorator;
 export default class Player extends cc.Component {
     horizontalMovement: number = 0;
     verticalMovement: number = 0;
-
-    @property
-    speed: number = 300;
+    speed: number = 150;
 
     onLoad() {
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);

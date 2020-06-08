@@ -11,3 +11,6 @@ export const CANVAS_WIDTH = 960;
 export const CANVAS_HEIGHT = 640;
 
 export const PLAYER_RADIUS = 64;
+export const EGG_RADIUS = 32;
+
+export const PLAYER_SPEED = 150;
