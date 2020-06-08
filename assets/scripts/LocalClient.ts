@@ -29,6 +29,8 @@ export default class LocalClient extends cc.Component {
 
     RemoveEgg(eggData: any) {
         if (this.eggsList.hasOwnProperty(eggData.id)) {
+            let egg: cc.Node = this.eggsList[eggData.id];
+            egg.destroy();
             delete this.eggsList[eggData.id];
         }
     }
