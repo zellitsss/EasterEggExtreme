@@ -1,6 +1,7 @@
 import { PLAY_TIME, MIN_SPAWN_TIME, MAX_SPAWN_TIME, MAX_PLAYERS, CANVAS_WIDTH, PLAYER_RADIUS, CANVAS_HEIGHT } from "./Defines";
 import Player from "./server/Player";
 import LocalClient from "./LocalClient";
+import { GetSpawnTime, UniqueID, GetRandomPosition, GetRandomUpdateTime } from "./server/utils";
 
 const {ccclass, property} = cc._decorator;
 
@@ -24,14 +25,14 @@ export default class ServerSimulator extends cc.Component {
         this.localClients = this.node.getComponent(LocalClient);
 
         this.playTimeCountdown = PLAY_TIME;
-        this.spawnTime = this.GetSpawnTime();
+        this.spawnTime = GetSpawnTime();
 
         // create players with random position
         for (let i = 0; i < MAX_PLAYERS; i++) {
             let player: Player = new Player();
-            let id = this.UniqueID()
+            let id = UniqueID()
             player.setID(id);
-            player.setPosition(this.GetRandomPosition());
+            player.setPosition(GetRandomPosition());
             this.playersList.push(player);
         }
         
@@ -50,32 +51,9 @@ export default class ServerSimulator extends cc.Component {
 
         if (this.updateCountdown <= 0) {
             // send update to client
-            this.updateCountdown = this.GetRandomUpdateTime();
+            this.updateCountdown = GetRandomUpdateTime();
         } else {
             this.updateCountdown -= dt;
         }
-    }
-
-    UniqueID(): string {
-        let num = Date.now() + Math.random();
-        return num.toString(36);
-    }
-
-    RandomBetween(min: number, max: number, precision: number = 1): number {
-        return Math.floor(Math.random() * (max * precision - min * precision) + min * precision) / precision;
-    }
-
-    GetRandomUpdateTime(): number {
-        return this.RandomBetween(this.minUpdateTime, this.maxUpdateTime, 100);
-    }
-
-    GetSpawnTime(): number {
-        return this.RandomBetween(MIN_SPAWN_TIME, MAX_SPAWN_TIME);
-    }
-
-    GetRandomPosition(): cc.Vec2 {
-        return new cc.Vec2(
-            this.RandomBetween(PLAYER_RADIUS / 2, CANVAS_WIDTH - PLAYER_RADIUS / 2),
-            this.RandomBetween(PLAYER_RADIUS / 2, CANVAS_HEIGHT - PLAYER_RADIUS / 2));
     }
 }
