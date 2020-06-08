@@ -2,8 +2,9 @@ const {ccclass, property} = cc._decorator;
 
 @ccclass
 export default class RivalAI extends cc.Component {
-   // LIFE-CYCLE CALLBACKS:
-
+   
+    id: string;
+    
     // onLoad () {}
 
     start () {

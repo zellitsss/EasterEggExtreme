@@ -15,8 +15,7 @@ export default class ServerSimulator extends cc.Component {
 
     spawnTime: number;
 
-    // playersList = { 'id_string' : player instance}
-    playersList = {};
+    playersList: Player[] = [];
 
     localClients: LocalClient;
 
@@ -29,15 +28,22 @@ export default class ServerSimulator extends cc.Component {
 
         // create players with random position
         for (let i = 0; i < MAX_PLAYERS; i++) {
-            let player = new Player();
+            let player: Player = new Player();
             let id = this.UniqueID()
             player.setID(id);
             player.setPosition(this.GetRandomPosition());
-            this.playersList[id] = player;
+            this.playersList.push(player);
         }
         
         // send initial message to local
-        // this.localClients.getmessage(...)
+        let playerPacks: any = {};
+        this.playersList.forEach((player) => {
+            playerPacks[player.id] = {
+                x: player.getPosition().x,
+                y: player.getPosition().y
+            }
+        })
+        this.localClients.GetInitMessage(playerPacks);
     }
 
     update (dt) {
