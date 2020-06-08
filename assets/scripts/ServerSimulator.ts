@@ -1,4 +1,6 @@
-import { PLAY_TIME, MIN_SPAWN_TIME, MAX_SPAWN_TIME } from "./Defines";
+import { PLAY_TIME, MIN_SPAWN_TIME, MAX_SPAWN_TIME, MAX_PLAYERS, CANVAS_WIDTH, PLAYER_RADIUS, CANVAS_HEIGHT } from "./Defines";
+import Player from "./server/Player";
+import LocalClient from "./LocalClient";
 
 const {ccclass, property} = cc._decorator;
 
@@ -13,11 +15,29 @@ export default class ServerSimulator extends cc.Component {
 
     spawnTime: number;
 
+    // playersList = { 'id_string' : player instance}
     playersList = {};
 
+    localClients: LocalClient;
+
     onLoad() {
+        // simulate the connection between server-client
+        this.localClients = this.node.getComponent(LocalClient);
+
         this.playTimeCountdown = PLAY_TIME;
         this.spawnTime = this.GetSpawnTime();
+
+        // create players with random position
+        for (let i = 0; i < MAX_PLAYERS; i++) {
+            let player = new Player();
+            let id = this.UniqueID()
+            player.setID(id);
+            player.setPosition(this.GetRandomPosition());
+            this.playersList[id] = player;
+        }
+        
+        // send initial message to local
+        // this.localClients.getmessage(...)
     }
 
     update (dt) {
@@ -45,5 +65,11 @@ export default class ServerSimulator extends cc.Component {
 
     GetSpawnTime(): number {
         return this.RandomBetween(MIN_SPAWN_TIME, MAX_SPAWN_TIME);
+    }
+
+    GetRandomPosition(): cc.Vec2 {
+        return new cc.Vec2(
+            this.RandomBetween(PLAYER_RADIUS / 2, CANVAS_WIDTH - PLAYER_RADIUS / 2),
+            this.RandomBetween(PLAYER_RADIUS / 2, CANVAS_HEIGHT - PLAYER_RADIUS / 2));
     }
 }
