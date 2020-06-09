@@ -75,4 +75,10 @@ export default class LocalClient extends cc.Component {
     SendDirectionToServer(direction: cc.Vec2) {
         this.server.OnPlayerMove(this.playerID, direction);
     }
+
+    GameOver(winner: any) {
+        Global.score = this.player.getComponent(ScoreControl).score;
+        Global.win = this.playerID === winner.id;
+        cc.director.loadScene("game_over");
+    }
 }

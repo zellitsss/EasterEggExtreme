@@ -1,3 +1,4 @@
 window.Global = {
-    score: null
+    score: null,
+    win: false
 }

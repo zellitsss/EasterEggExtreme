@@ -61,49 +61,65 @@ export default class ServerSimulator extends cc.Component {
     }
 
     update (dt) {
-        if (this.spawnTime <= 0 && this.eggsList.length < MAX_EGGS) {
-            this.SpawnNewEgg();
-            this.spawnTime = GetSpawnTime();
-        } else {
-            this.spawnTime -= dt;
-        }
-
-        let data: any[] = [];
-        // update player
-        Object.values(this.playersList).forEach((player: Player) => {
-            player.update(dt);
-
-            let d = {
-                id: player.id,
-                x: player.position.x,
-                y: player.position.y,
-                score: player.score,
-                self: player.id === this.localPlayerID
-            };
-            data.push(d);
-        })
-
-        // collision detection
-        Object.values(this.playersList).forEach((player: Player) => {
-            this.eggsList.forEach((egg, eggIndex) => {
-                let distance: number = player.getPosition().sub(egg.getPosition()).len();
-                if (distance <= EGG_RADIUS + PLAYER_RADIUS) {
-                    // increase score for player
-                    player.score += egg.score;
-                    // remove egg
-                    this.localClient.RemoveEgg({
-                        id: egg.id
-                    })
-                    this.eggsList.splice(eggIndex, 1);
+        if (this.playTimeCountdown <= 0) {
+            let maxScore: number = 0;
+            let winner = {};
+            Object.values(this.playersList).forEach((player: Player) => {
+                if (player.score >= maxScore) {
+                    maxScore = player.score
+                    winner = {
+                        score: player.score,
+                        id: player.id
+                    }
                 }
             });
-        });
-
-        if (this.updateCountdown <= 0) {
-            this.SendUpdateToClient(data);
-            this.updateCountdown = GetRandomUpdateTime();
+            this.localClient.GameOver(winner);
         } else {
-            this.updateCountdown -= dt;
+            if (this.spawnTime <= 0 && this.eggsList.length < MAX_EGGS) {
+                this.SpawnNewEgg();
+                this.spawnTime = GetSpawnTime();
+            } else {
+                this.spawnTime -= dt;
+            }
+    
+            let data: any[] = [];
+            // update player
+            Object.values(this.playersList).forEach((player: Player) => {
+                player.update(dt);
+    
+                let d = {
+                    id: player.id,
+                    x: player.position.x,
+                    y: player.position.y,
+                    score: player.score,
+                    self: player.id === this.localPlayerID
+                };
+                data.push(d);
+            })
+    
+            // collision detection
+            Object.values(this.playersList).forEach((player: Player) => {
+                this.eggsList.forEach((egg, eggIndex) => {
+                    let distance: number = player.getPosition().sub(egg.getPosition()).len();
+                    if (distance <= EGG_RADIUS + PLAYER_RADIUS) {
+                        // increase score for player
+                        player.score += egg.score;
+                        // remove egg
+                        this.localClient.RemoveEgg({
+                            id: egg.id
+                        })
+                        this.eggsList.splice(eggIndex, 1);
+                    }
+                });
+            });
+    
+            if (this.updateCountdown <= 0) {
+                this.SendUpdateToClient(data);
+                this.updateCountdown = GetRandomUpdateTime();
+            } else {
+                this.updateCountdown -= dt;
+            }
+            this.playTimeCountdown -= dt;
         }
     }
 
