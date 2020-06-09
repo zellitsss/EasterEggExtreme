@@ -2,15 +2,18 @@ import Entity from "./Entity";
 import Bot from "./Bot";
 import { GetRandomPosition } from "./utils";
 import { PLAYER_SPEED } from "../Defines";
+import Egg from "./Egg";
 
 export default class Player extends Entity {
     isBot: boolean = false;
     bot: Bot = null;
     direction: cc.Vec2 = new cc.Vec2(0, 0);
     score: number = 0;
+    eggsList: Egg[] = [];
 
     update(dt) {
         if (this.isBot) {
+            this.bot.eggsList = this.eggsList;
             this.bot.update(dt);
             this.direction = this.bot.direction;
         }

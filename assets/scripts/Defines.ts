@@ -13,4 +13,6 @@ export const CANVAS_HEIGHT = 640;
 export const PLAYER_RADIUS = 32;
 export const EGG_RADIUS = 16;
 
-export const PLAYER_SPEED = 150;
+export const PLAYER_SPEED = 80;
+
+export const BOT_SIGHT = 200;

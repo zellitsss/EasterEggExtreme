@@ -95,7 +95,7 @@ export default class ServerSimulator extends cc.Component {
                     self: player.id === this.localPlayerID
                 };
                 data.push(d);
-            })
+            });
     
             // collision detection
             Object.values(this.playersList).forEach((player: Player) => {
@@ -112,6 +112,11 @@ export default class ServerSimulator extends cc.Component {
                     }
                 });
             });
+
+            // update eggs list to players
+            Object.values(this.playersList).forEach((player: Player) => {
+                player.eggsList = this.eggsList;
+            })
     
             if (this.updateCountdown <= 0) {
                 this.SendUpdateToClient(data);
