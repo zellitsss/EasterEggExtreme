@@ -24,6 +24,7 @@ export default class LocalClient extends cc.Component {
 
     onLoad() {
         this.server = this.node.getComponent(ServerSimulator);
+        Global.score = 0;
     }
     
     GetInitMessage(data: any[]) {
