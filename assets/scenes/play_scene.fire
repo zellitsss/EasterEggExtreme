@@ -177,7 +177,7 @@
       "array": [
         0,
         0,
-        549.9261314031186,
+        409.1564083473449,
         0,
         0,
         0,
@@ -341,7 +341,9 @@
       "__id__": 5
     },
     "_enabled": true,
-    "speed": 300,
+    "localClient": {
+      "__id__": 2
+    },
     "_id": "1a3bN1+wtFJphFgjAZd5KK"
   },
   {
@@ -399,6 +401,9 @@
     "eggPrefab": {
       "__uuid__": "3a52f066-6e3a-4305-81d4-23239daed80e"
     },
+    "rivalPrefab": {
+      "__uuid__": "f2bc2e86-cc8a-4f65-b88e-1fcee0ab3742"
+    },
     "player": {
       "__id__": 5
     },
@@ -412,9 +417,6 @@
       "__id__": 2
     },
     "_enabled": true,
-    "rivalPrefab": {
-      "__uuid__": "f2bc2e86-cc8a-4f65-b88e-1fcee0ab3742"
-    },
     "_id": "e5bsdOrx5EtrdDAuWaMOcM"
   }
 ]

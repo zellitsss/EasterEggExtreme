@@ -1,3 +1,5 @@
+import LocalClient from "./LocalClient";
+
 const {ccclass, property} = cc._decorator;
 
 @ccclass
@@ -5,6 +7,9 @@ export default class Player extends cc.Component {
     horizontalMovement: number = 0;
     verticalMovement: number = 0;
     speed: number = 150;
+
+    @property(cc.Node)
+    localClient: cc.Node = null;
 
     onLoad() {
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
@@ -14,7 +19,7 @@ export default class Player extends cc.Component {
     update(dt) {
         let direction: cc.Vec2 = new cc.Vec2(this.horizontalMovement, this.verticalMovement);
         direction.normalizeSelf();
-        this.node.setPosition(this.node.getPosition().add(direction.mul(dt * this.speed)));
+        // this.node.setPosition(this.node.getPosition().add(direction.mul(dt * this.speed)));
     }
 
     onKeyDown(event: cc.Event.EventKeyboard) {
@@ -34,6 +39,7 @@ export default class Player extends cc.Component {
             default:
                 break;
         }
+        this.SendDirectionToServer();
     }
 
     onKeyUp(event: cc.Event.EventKeyboard) {
@@ -61,5 +67,10 @@ export default class Player extends cc.Component {
             default:
                 break;
         }
+        this.SendDirectionToServer();
+    }
+
+    SendDirectionToServer() {
+        let direction: cc.Vec2 = new cc.Vec2(this.horizontalMovement, this.verticalMovement);
     }
 }

@@ -1,4 +1,4 @@
-import RivalAI from "./RivalAI";
+import ServerSimulator from "./ServerSimulator";
 
 const {ccclass, property} = cc._decorator;
 
@@ -7,17 +7,36 @@ export default class LocalClient extends cc.Component {
     @property(cc.Prefab)
     eggPrefab: cc.Prefab = null;
 
+    @property(cc.Prefab)
+    rivalPrefab: cc.Prefab = null;
+
     @property(cc.Node)
     player: cc.Node = null;
+
+    server: ServerSimulator = null;
 
     playerID: string = null;
 
     rivalList = {};
     eggsList = {};
+
+    onLoad() {
+        this.server = this.node.getComponent(ServerSimulator);
+    }
     
-    GetInitMessage(data: any) {
-        this.playerID = data.id;
-        this.player.setPosition(this.node.convertToNodeSpaceAR(new cc.Vec2(data.x, data.y)));
+    GetInitMessage(data: any[]) {
+        data.forEach((playerData: any) => {
+            if (playerData.self == true) {
+                this.playerID = playerData.id;
+                this.player.setPosition(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
+            }
+            else {
+                let rival: cc.Node = cc.instantiate(this.rivalPrefab);
+                rival.setPosition(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
+                rival.parent = this.node;
+                this.rivalList[playerData.id] = rival;
+            }
+        });
     }
 
     AddNewEgg(eggData: any) {
@@ -33,5 +52,9 @@ export default class LocalClient extends cc.Component {
             egg.destroy();
             delete this.eggsList[eggData.id];
         }
+    }
+
+    SetPlayerPosition(position: cc.Vec2) {
+        this.player.setPosition(this.node.convertToNodeSpaceAR(position));
     }
 }
