@@ -10,7 +10,7 @@ export function RandomBetween(min: number, max: number, precision: number = 1): 
 }
 
 export function GetRandomUpdateTime(): number {
-    return this.RandomBetween(this.minUpdateTime, this.maxUpdateTime, 100);
+    return this.RandomBetween(0.1, 0.5, 100);
 }
 
 export function GetSpawnTime(): number {

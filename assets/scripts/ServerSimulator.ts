@@ -22,11 +22,11 @@ export default class ServerSimulator extends cc.Component {
 
     localPlayerID: string;
 
-    localClients: LocalClient;
+    localClient: LocalClient;
 
     onLoad() {
         // simulate the connection between server-client
-        this.localClients = this.node.getComponent(LocalClient);
+        this.localClient = this.node.getComponent(LocalClient);
 
         this.playTimeCountdown = PLAY_TIME;
         this.spawnTime = GetSpawnTime();
@@ -56,8 +56,7 @@ export default class ServerSimulator extends cc.Component {
             data.push(d);
         }
 
-
-        this.localClients.GetInitMessage(data);
+        this.localClient.GetInitMessage(data);
     }
 
     update (dt) {
@@ -68,9 +67,18 @@ export default class ServerSimulator extends cc.Component {
             this.spawnTime -= dt;
         }
 
+        let data: any[] = [];
         // update player
         Object.values(this.playersList).forEach((player: Player) => {
             player.update(dt);
+
+            let d = {
+                id: player.id,
+                x: player.position.x,
+                y: player.position.y,
+                self: player.id === this.localPlayerID
+            };
+            data.push(d);
         })
 
         // collision detection
@@ -80,7 +88,7 @@ export default class ServerSimulator extends cc.Component {
                 if (distance <= EGG_RADIUS + PLAYER_RADIUS) {
                     // increase score for player
                     // remove egg
-                    this.localClients.RemoveEgg({
+                    this.localClient.RemoveEgg({
                         id: egg.id
                     })
                     this.eggsList.splice(eggIndex, 1);
@@ -88,11 +96,8 @@ export default class ServerSimulator extends cc.Component {
             });
         });
 
-        let player: Player = this.playersList[this.localPlayerID];
-        this.localClients.SetPlayerPosition(player.position);
-
         if (this.updateCountdown <= 0) {
-            
+            this.SendUpdateToClient(data);
             this.updateCountdown = GetRandomUpdateTime();
         } else {
             this.updateCountdown -= dt;
@@ -108,7 +113,16 @@ export default class ServerSimulator extends cc.Component {
             x: egg.getPosition().x,
             y: egg.getPosition().y
         }
-        this.localClients.AddNewEgg(eggData);
+        this.localClient.AddNewEgg(eggData);
         this.eggsList.push(egg);
+    }
+
+    SendUpdateToClient(data: any[]) {
+        this.localClient.GetUpdateFromServer(data);
+    }
+
+    OnPlayerMove(id: string, direction: cc.Vec2) {
+        let player: Player = this.playersList[id];
+        player.direction = direction.normalize();
     }
 }

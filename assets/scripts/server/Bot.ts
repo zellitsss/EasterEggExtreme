@@ -3,7 +3,8 @@ import { GetRandomPosition } from "./utils";
 
 export default class Bot {
     target: cc.Vec2 = new cc.Vec2(0, 0);
-    position: cc.Vec2 = new cc.Vec2(0,0);
+    position: cc.Vec2 = new cc.Vec2(0, 0);
+    direction: cc.Vec2 = new cc.Vec2(0, 0);
 
     update(dt) {
         let direction: cc.Vec2 = this.target.sub(this.position);
@@ -12,6 +13,6 @@ export default class Bot {
             direction = this.target.sub(this.position);
         }
         direction.normalizeSelf();
-        this.position.add(direction.mul(dt * PLAYER_SPEED));
+        this.direction = direction;
     }
 }

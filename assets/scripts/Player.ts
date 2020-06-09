@@ -72,5 +72,6 @@ export default class Player extends cc.Component {
 
     SendDirectionToServer() {
         let direction: cc.Vec2 = new cc.Vec2(this.horizontalMovement, this.verticalMovement);
+        this.localClient.getComponent(LocalClient).SendDirectionToServer(direction);
     }
 }

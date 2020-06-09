@@ -29,8 +29,7 @@ export default class LocalClient extends cc.Component {
             if (playerData.self == true) {
                 this.playerID = playerData.id;
                 this.player.setPosition(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
-            }
-            else {
+            } else {
                 let rival: cc.Node = cc.instantiate(this.rivalPrefab);
                 rival.setPosition(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
                 rival.parent = this.node;
@@ -56,5 +55,22 @@ export default class LocalClient extends cc.Component {
 
     SetPlayerPosition(position: cc.Vec2) {
         this.player.setPosition(this.node.convertToNodeSpaceAR(position));
+    }
+
+    GetUpdateFromServer(data: any[]) {
+        data.forEach((playerData) => {
+            if(playerData.self == true) {
+                this.player.setPosition(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
+            } else {
+                if (this.rivalList.hasOwnProperty(playerData.id)) {
+                    let rival: cc.Node = this.rivalList[playerData.id];
+                    rival.setPosition(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
+                }
+            }
+        })
+    }
+
+    SendDirectionToServer(direction: cc.Vec2) {
+        this.server.OnPlayerMove(this.playerID, direction);
     }
 }
