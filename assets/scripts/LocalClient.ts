@@ -1,5 +1,6 @@
 import ServerSimulator from "./ServerSimulator";
 import ScoreControl from "./ScoreControl";
+import InterpolationBuffer from "./InterpolationBuffer";
 
 const {ccclass, property} = cc._decorator;
 
@@ -32,7 +33,7 @@ export default class LocalClient extends cc.Component {
                 this.player.setPosition(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
             } else {
                 let rival: cc.Node = cc.instantiate(this.rivalPrefab);
-                rival.setPosition(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
+                rival.getComponent(InterpolationBuffer).SetOriginPosition(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
                 rival.parent = this.node;
                 this.rivalList[playerData.id] = rival;
             }
@@ -54,19 +55,16 @@ export default class LocalClient extends cc.Component {
         }
     }
 
-    SetPlayerPosition(position: cc.Vec2) {
-        this.player.setPosition(this.node.convertToNodeSpaceAR(position));
-    }
-
     GetUpdateFromServer(data: any[]) {
         data.forEach((playerData) => {
             if(playerData.self == true) {
-                this.player.setPosition(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
+                // this.player.setPosition(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
+                let clientPos: cc.Vec2 = this.node.convertToWorldSpaceAR(this.player.getPosition());
                 this.player.getComponent(ScoreControl).SetScore(playerData.score);
             } else {
                 if (this.rivalList.hasOwnProperty(playerData.id)) {
                     let rival: cc.Node = this.rivalList[playerData.id];
-                    rival.setPosition(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
+                    rival.getComponent(InterpolationBuffer).PushState(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
                     rival.getComponent(ScoreControl).SetScore(playerData.score);
                 }
             }

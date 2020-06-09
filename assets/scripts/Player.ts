@@ -1,4 +1,5 @@
 import LocalClient from "./LocalClient";
+import { PLAYER_SPEED } from "./Defines";
 
 const {ccclass, property} = cc._decorator;
 
@@ -18,7 +19,7 @@ export default class Player extends cc.Component {
     update(dt) {
         let direction: cc.Vec2 = new cc.Vec2(this.horizontalMovement, this.verticalMovement);
         direction.normalizeSelf();
-        // this.node.setPosition(this.node.getPosition().add(direction.mul(dt * this.speed)));
+        this.node.setPosition(this.node.getPosition().add(direction.mul(dt * PLAYER_SPEED)));
     }
 
     onKeyDown(event: cc.Event.EventKeyboard) {
