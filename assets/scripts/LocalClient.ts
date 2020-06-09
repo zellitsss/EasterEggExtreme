@@ -1,4 +1,5 @@
 import ServerSimulator from "./ServerSimulator";
+import ScoreControl from "./ScoreControl";
 
 const {ccclass, property} = cc._decorator;
 
@@ -61,10 +62,12 @@ export default class LocalClient extends cc.Component {
         data.forEach((playerData) => {
             if(playerData.self == true) {
                 this.player.setPosition(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
+                this.player.getComponent(ScoreControl).SetScore(playerData.score);
             } else {
                 if (this.rivalList.hasOwnProperty(playerData.id)) {
                     let rival: cc.Node = this.rivalList[playerData.id];
                     rival.setPosition(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
+                    rival.getComponent(ScoreControl).SetScore(playerData.score);
                 }
             }
         })

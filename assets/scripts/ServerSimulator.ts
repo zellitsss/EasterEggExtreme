@@ -42,6 +42,7 @@ export default class ServerSimulator extends cc.Component {
                 id: id,
                 x: player.position.x,
                 y: player.position.y,
+                score: 0,
                 self: false
             };
             if (i == 0) {
@@ -76,6 +77,7 @@ export default class ServerSimulator extends cc.Component {
                 id: player.id,
                 x: player.position.x,
                 y: player.position.y,
+                score: player.score,
                 self: player.id === this.localPlayerID
             };
             data.push(d);
@@ -87,6 +89,7 @@ export default class ServerSimulator extends cc.Component {
                 let distance: number = player.getPosition().sub(egg.getPosition()).len();
                 if (distance <= EGG_RADIUS + PLAYER_RADIUS) {
                     // increase score for player
+                    player.score += egg.score;
                     // remove egg
                     this.localClient.RemoveEgg({
                         id: egg.id

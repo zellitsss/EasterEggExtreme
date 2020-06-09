@@ -78,9 +78,6 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 12
-      },
-      {
         "__id__": 13
       },
       {
@@ -88,6 +85,9 @@
       },
       {
         "__id__": 15
+      },
+      {
+        "__id__": 16
       }
     ],
     "_prefab": null,
@@ -258,6 +258,9 @@
       },
       {
         "__id__": 11
+      },
+      {
+        "__id__": 12
       }
     ],
     "_prefab": null,
@@ -540,6 +543,19 @@
       "__id__": 2
     },
     "_id": "1a3bN1+wtFJphFgjAZd5KK"
+  },
+  {
+    "__type__": "9e6fedVs11DsLTpc+nzUZ3m",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 5
+    },
+    "_enabled": true,
+    "scoreLabel": {
+      "__id__": 7
+    },
+    "_id": "f1l6N2V2hMCq8D+2xfjdSS"
   },
   {
     "__type__": "cc.Canvas",

@@ -6,7 +6,6 @@ const {ccclass, property} = cc._decorator;
 export default class Player extends cc.Component {
     horizontalMovement: number = 0;
     verticalMovement: number = 0;
-    speed: number = 150;
 
     @property(cc.Node)
     localClient: cc.Node = null;

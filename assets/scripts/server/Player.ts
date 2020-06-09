@@ -7,6 +7,7 @@ export default class Player extends Entity {
     isBot: boolean = false;
     bot: Bot = null;
     direction: cc.Vec2 = new cc.Vec2(0, 0);
+    score: number = 0;
 
     update(dt) {
         if (this.isBot) {
