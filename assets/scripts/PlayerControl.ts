@@ -4,7 +4,7 @@ import InterpolationBuffer from "./InterpolationBuffer";
 const {ccclass, property} = cc._decorator;
 
 @ccclass
-export default class Player extends cc.Component {
+export default class PlayerControl extends cc.Component {
     horizontalMovement: number = 0;
     verticalMovement: number = 0;
 

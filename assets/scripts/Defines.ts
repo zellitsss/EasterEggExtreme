@@ -15,4 +15,4 @@ export const EGG_RADIUS = 16;
 
 export const PLAYER_SPEED = 80;
 
-export const BOT_SIGHT = 200;
+export const BOT_SIGHT = 50;
