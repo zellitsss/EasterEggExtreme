@@ -1,7 +1,7 @@
 import Entity from "./Entity";
 import Bot from "./Bot";
-import { GetRandomPosition } from "./utils";
-import { PLAYER_SPEED } from "../Defines";
+import { GetRandomPosition, Clamp } from "./utils";
+import { PLAYER_SPEED, PLAYER_RADIUS, CANVAS_WIDTH, CANVAS_HEIGHT } from "../Defines";
 import Egg from "./Egg";
 
 export default class Player extends Entity {
@@ -20,6 +20,9 @@ export default class Player extends Entity {
 
         this.direction.normalizeSelf();
         this.position = this.position.add(this.direction.mul(dt * PLAYER_SPEED));
+
+        this.position.x = Clamp(this.position.x, PLAYER_RADIUS, CANVAS_WIDTH - PLAYER_RADIUS);
+        this.position.y = Clamp(this.position.y, PLAYER_RADIUS, CANVAS_HEIGHT - PLAYER_RADIUS);
 
         if (this.isBot) {
             this.bot.position = this.position
