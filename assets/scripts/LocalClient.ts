@@ -31,7 +31,8 @@ export default class LocalClient extends cc.Component {
         data.forEach((playerData: any) => {
             if (playerData.self == true) {
                 this.playerID = playerData.id;
-                this.player.setPosition(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
+                // this.player.setPosition(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
+                this.player.getComponent(InterpolationBuffer).SetOriginPosition(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
             } else {
                 let rival: cc.Node = cc.instantiate(this.rivalPrefab);
                 rival.getComponent(InterpolationBuffer).SetOriginPosition(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
@@ -57,19 +58,20 @@ export default class LocalClient extends cc.Component {
     }
 
     GetUpdateFromServer(data: any[]) {
-        data.forEach((playerData) => {
-            if(playerData.self == true) {
-                // this.player.setPosition(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
-                let clientPos: cc.Vec2 = this.node.convertToWorldSpaceAR(this.player.getPosition());
-                this.player.getComponent(ScoreControl).SetScore(playerData.score);
-            } else {
-                if (this.rivalList.hasOwnProperty(playerData.id)) {
-                    let rival: cc.Node = this.rivalList[playerData.id];
-                    rival.getComponent(InterpolationBuffer).PushState(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
-                    rival.getComponent(ScoreControl).SetScore(playerData.score);
+        if (data.length > 0) {
+            data.forEach((playerData) => {
+                if(playerData.self == true) {
+                    this.player.getComponent(InterpolationBuffer).PushState(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
+                    this.player.getComponent(ScoreControl).SetScore(playerData.score);
+                } else {
+                    if (this.rivalList.hasOwnProperty(playerData.id)) {
+                        let rival: cc.Node = this.rivalList[playerData.id];
+                        rival.getComponent(InterpolationBuffer).PushState(this.node.convertToNodeSpaceAR(new cc.Vec2(playerData.x, playerData.y)));
+                        rival.getComponent(ScoreControl).SetScore(playerData.score);
+                    }
                 }
-            }
-        })
+            });
+        }
     }
 
     SendDirectionToServer(direction: cc.Vec2) {

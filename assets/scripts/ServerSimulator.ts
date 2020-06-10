@@ -12,6 +12,7 @@ export default class ServerSimulator extends cc.Component {
     minUpdateTime: number = 0.1;
     maxUpdateTime: number = 0.5;
 
+    serverLatency: number = 0;
     updateCountdown: number = 0;
     playTimeCountdown: number = 0;
 
@@ -24,10 +25,12 @@ export default class ServerSimulator extends cc.Component {
 
     localClient: LocalClient;
 
+    packedData: any[] = [];
     onLoad() {
         // simulate the connection between server-client
         this.localClient = this.node.getComponent(LocalClient);
 
+        this.serverLatency = GetRandomUpdateTime();
         this.playTimeCountdown = PLAY_TIME;
         this.spawnTime = GetSpawnTime();
 
@@ -83,7 +86,7 @@ export default class ServerSimulator extends cc.Component {
             }
     
             let data: any[] = [];
-            // update player
+            // update players
             Object.values(this.playersList).forEach((player: Player) => {
                 player.update(dt);
     
@@ -119,11 +122,16 @@ export default class ServerSimulator extends cc.Component {
             })
     
             if (this.updateCountdown <= 0) {
-                this.SendUpdateToClient(data);
-                this.updateCountdown = GetRandomUpdateTime();
+
+                this.SendUpdateToClient(this.packedData);
+
+                this.packedData = data;
+                this.serverLatency = GetRandomUpdateTime();
+                this.updateCountdown = this.serverLatency;
             } else {
                 this.updateCountdown -= dt;
             }
+
             this.playTimeCountdown -= dt;
         }
     }

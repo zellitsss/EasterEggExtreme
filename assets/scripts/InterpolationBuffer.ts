@@ -13,10 +13,14 @@ export default class InterpolationBuffer extends cc.Component {
     lerpPosition: cc.Vec2;
 
     delayedTime: number = 0.2; // delayed time for interpolating (second)
+    switch: boolean = false;
+    switchPosition: cc.Vec2;
 
     update(dt) {
         // delete expired buffer
         while (this.buffer.length > 0 && this.markedTime > this.buffer[0].time + this.delayedTime) {
+            this.switch = true;
+            this.switchPosition = this.lastPosition;
             this.lastPosition = this.buffer[0].position;
             this.lastTime = this.buffer[0].time;
             this.buffer.splice(0, 1);
@@ -25,6 +29,10 @@ export default class InterpolationBuffer extends cc.Component {
         if (this.buffer.length > 0 && this.buffer[0].time > 0) {
             let factor: number = (this.markedTime - this.lastTime) / (this.buffer[0].time - this.lastTime);
             this.lerpPosition = this.LerpVec2(this.lastPosition, this.buffer[0].position, factor);
+            // if (this.switch) {
+            //     this.lerpPosition = this.LerpVec2(this.switchPosition, this.lerpPosition, factor);
+            //     this.switch = false;
+            // }
         }
 
         this.markedTime = this.currentTime;
@@ -32,6 +40,7 @@ export default class InterpolationBuffer extends cc.Component {
     }
 
     SetOriginPosition(position: cc.Vec2) {
+        this.lerpPosition = position;
         this.node.setPosition(position);
         this.lastPosition = position;
         this.lastTime = this.currentTime;
