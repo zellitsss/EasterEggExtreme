@@ -101,25 +101,41 @@ export default class ServerSimulator extends cc.Component {
             });
     
             // collision detection
-            Object.values(this.playersList).forEach((player: Player) => {
-                this.eggsList.forEach((egg, eggIndex) => {
+            this.eggsList.forEach((egg, eggIndex) => {
+                let minDistance = -1; // initial value
+                let playerId: string = '';
+                Object.values(this.playersList).forEach((player: Player) => {
                     let distance: number = player.getPosition().sub(egg.getPosition()).len();
                     if (distance <= EGG_RADIUS + PLAYER_RADIUS) {
-                        // increase score for player
-                        player.score += egg.score;
-                        // remove egg
-                        this.localClient.RemoveEgg({
-                            id: egg.id
-                        })
-                        this.eggsList.splice(eggIndex, 1);
+                        // first collided player
+                        if (minDistance == -1) {
+                            minDistance = distance;
+                            playerId = player.id
+                        } else {
+                            if (distance <= minDistance) {
+                                playerId = player.id
+                                minDistance = distance
+                            }
+                        }
                     }
                 });
+
+                if (playerId !== '' && minDistance !== -1) {
+                    if (this.playersList.hasOwnProperty(playerId)) {
+                        let p: Player = this.playersList[playerId];
+                        p.score += egg.score;
+                    }
+                    this.localClient.RemoveEgg({
+                        id: egg.id
+                    });
+                    this.eggsList.splice(eggIndex, 1);
+                }
             });
 
             // update eggs list to players
             Object.values(this.playersList).forEach((player: Player) => {
                 player.eggsList = this.eggsList;
-            })
+            });
     
             if (this.updateCountdown <= 0) {
 
